@@ -5,7 +5,7 @@
 #include "traits.h"
 #include "types.h"
 
-namespace synchronizor {
+namespace msync {
 
 template <typename _Derived> struct StorageBase {
   using Derived = _Derived;
@@ -32,4 +32,4 @@ protected:
   Time history_win_;
 };
 
-} // namespace synchronizor
+} // namespace msync

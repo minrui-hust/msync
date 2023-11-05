@@ -3,7 +3,7 @@
 #include "../policy.h"
 #include "../traits.h"
 
-namespace synchronizor {
+namespace msync {
 
 // Exact time policy
 template <typename _MsgType, typename _Storage> struct ExactTimePolicy;
@@ -40,4 +40,4 @@ struct ExactTimePolicy : public Policy<ExactTimePolicy<_MsgType, _Storage>> {
   }
 };
 
-} // namespace synchronizor
+} // namespace msync

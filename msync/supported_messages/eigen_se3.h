@@ -8,7 +8,7 @@
 
 // TODO: use Matrix<7,1> for SE3 may shade Matrix<7,1> for other usage
 
-namespace synchronizor {
+namespace msync {
 
 // the 7 data is [x,y,z,qw,qx,qy,qz]
 template <typename Scalar>
@@ -70,4 +70,4 @@ struct LinearInterpolaterTraits<Eigen::Matrix<Scalar, 7, 1>> {
   }
 };
 
-} // namespace synchronizor
+} // namespace msync

@@ -3,7 +3,7 @@
 #include "../policy.h"
 #include "../traits.h"
 
-namespace synchronizor {
+namespace msync {
 
 // Newest policy
 template <typename _MsgType, typename _Storage> struct NewestPolicy;
@@ -39,4 +39,4 @@ struct NewestPolicy : public Policy<NewestPolicy<_MsgType, _Storage>> {
   }
 };
 
-} // namespace synchronizor
+} // namespace msync

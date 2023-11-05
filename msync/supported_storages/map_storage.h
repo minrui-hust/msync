@@ -5,7 +5,7 @@
 #include "../storage.h"
 #include "../traits.h"
 
-namespace synchronizor {
+namespace msync {
 
 template <typename _Msg, typename _Alloc>
 using TimeMsgMap = std::map<Time, _Msg, std::less<Time>, _Alloc>;
@@ -78,4 +78,4 @@ protected:
   TimeMsgMap<_Msg, _Alloc> storage_;
 };
 
-} // namespace synchronizor
+} // namespace msync

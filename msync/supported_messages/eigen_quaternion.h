@@ -6,7 +6,7 @@
 // so we do not inlcude eigen header here in this file,
 // user should handle the dependencies of eigen headers
 
-namespace synchronizor {
+namespace msync {
 
 // eigen quaternion linear interpolater traits
 template <typename Scalar>
@@ -79,4 +79,4 @@ struct LinearInterpolaterTraits<Eigen::Quaternion<Scalar>> {
   }
 };
 
-} // namespace synchronizor
+} // namespace msync

@@ -3,7 +3,7 @@
 #include "../policy.h"
 #include "../traits.h"
 
-namespace synchronizor {
+namespace msync {
 
 // Nearest policy
 template <typename _MsgType, typename _Storage> struct NearestPolicy;
@@ -64,4 +64,4 @@ protected:
   Time valid_win_;
 };
 
-} // namespace synchronizor
+} // namespace msync

@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
 
-namespace synchronizor {
+namespace msync {
 
 using Time = int64_t;
 
@@ -25,4 +25,4 @@ enum StatusCode {
   kEmitSuccess,
 };
 
-} // namespace synchronizor
+} // namespace msync

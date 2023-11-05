@@ -5,7 +5,7 @@
 #include "storage.h"
 #include "traits.h"
 
-namespace synchronizor {
+namespace msync {
 
 template <typename _Derived> struct PolicyBase {
   using Derived = _Derived;
@@ -145,4 +145,4 @@ protected:
   std::vector<Policy> policies_;
 };
 
-} // namespace synchronizor
+} // namespace msync

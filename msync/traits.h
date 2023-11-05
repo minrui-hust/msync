@@ -1,6 +1,6 @@
 #pragma once
 
-namespace synchronizor  {
+namespace msync {
 
 template <typename _T> struct PolicyTraits {};
 
@@ -14,4 +14,4 @@ template <typename T> struct LinearInterpolaterTraits {
   static T between(const T &from, const T &to) { return to - from; }
 };
 
-} // namespace sync
+} // namespace msync

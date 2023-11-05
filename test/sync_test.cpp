@@ -3,16 +3,16 @@
 #include "eigen3/Eigen/Core"
 #include "eigen3/Eigen/Geometry"
 
-#include "synchronizor/supported_messages/eigen_quaternion.h"
-#include "synchronizor/supported_messages/eigen_se3.h"
-#include "synchronizor/supported_policies/exact_time.h"
-#include "synchronizor/supported_policies/linear_interpolater.h"
-#include "synchronizor/supported_policies/nearest.h"
-#include "synchronizor/supported_policies/newest.h"
-#include "synchronizor/supported_storages/map_storage.h"
-#include "synchronizor/syncronizer.h"
+#include "msync/supported_messages/eigen_quaternion.h"
+#include "msync/supported_messages/eigen_se3.h"
+#include "msync/supported_policies/exact_time.h"
+#include "msync/supported_policies/linear_interpolater.h"
+#include "msync/supported_policies/nearest.h"
+#include "msync/supported_policies/newest.h"
+#include "msync/supported_storages/map_storage.h"
+#include "msync/syncronizer.h"
 
-using namespace synchronizor;
+using namespace msync;
 
 TEST(InterfaceTest, Syncronizer) {
   using Vector3f = Eigen::Vector3f;

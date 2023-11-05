@@ -3,7 +3,7 @@
 #include "../policy.h"
 #include "../traits.h"
 
-namespace synchronizor {
+namespace msync {
 
 // Linear interpolate policy
 template <typename _MsgType, typename _Storage> struct LinearInterpolatePolicy;
@@ -74,4 +74,4 @@ protected:
   Time predict_win_;
 };
 
-} // namespace synchronizor
+} // namespace msync

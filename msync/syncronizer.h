@@ -9,7 +9,7 @@
 
 #include "policy.h"
 
-namespace synchronizor {
+namespace msync {
 
 template <typename _Derived> struct SyncronizerBase {
   using Derived = _Derived;
@@ -209,4 +209,4 @@ using HomoSyncronizerMinInterval = SyncronizerMinInterval<PolicyArray<_Policy>>;
 template <typename _Policy>
 using HomoSyncronizerMasterSlave = SyncronizerMasterSlave<PolicyArray<_Policy>>;
 
-} // namespace synchronizor
+} // namespace msync
