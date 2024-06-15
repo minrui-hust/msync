@@ -6,9 +6,9 @@ namespace msync {
 using Time = int64_t;
 
 enum PolicyAttribute {
-  kOptional = 0,
-  kNormal,
-  kMaster,
+  kOptional = 0, // Optional policy, which means peek fail is ok
+  kNormal,       // Normal policy, peek fail will not do callback
+  kMaster,       // Master policy
 };
 
 enum StatusCode {

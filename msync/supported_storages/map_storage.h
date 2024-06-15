@@ -32,12 +32,14 @@ struct MapStorage : public StorageBase<MapStorage<_Msg, _Alloc>> {
 
   // interface implementations
 
-  bool pushImpl(const int64_t &time, const MsgType &msg) {
+  bool pushImpl(const Time &time, const MsgType &msg) {
+    // check stamp monotonicity
     if (!stamp2msg_.empty() && time <= stamp2msg_.rbegin()->first) {
       return false;
     }
 
-    stamp2msg_.insert(std::make_pair(time, msg));
+    // seems everything ok, insert time msg pair
+    stamp2msg_.insert({time, msg});
 
     // check if we should remove the old ones
     if (stamp2msg_.begin()->first < time - history_win_) {
@@ -69,6 +71,10 @@ struct MapStorage : public StorageBase<MapStorage<_Msg, _Alloc>> {
   std::pair<Time, MsgType> frontImpl() const { return *stamp2msg_.begin(); }
 
   std::pair<Time, MsgType> backImpl() const { return *stamp2msg_.rbegin(); }
+
+  Time frontStampImpl() const { return stamp2msg_.begin()->first; }
+
+  Time backStampImpl() const { return stamp2msg_.rbegin()->first; }
 
 protected:
   TimeMsgMap<_Msg, _Alloc> stamp2msg_;

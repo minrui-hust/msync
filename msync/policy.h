@@ -46,14 +46,13 @@ struct Policy : public PolicyBase<Policy<_Derived>> {
   using Storage = typename PolicyTraits<Derived>::Storage;
 
   Policy(const Time history_win, const PolicyAttribute attr = kNormal)
-      : attr_(attr), storage_(history_win) {}
+      : storage_(history_win), attr_(attr) {}
 
-  virtual bool push(const Time time, const InType &msg) override {
+  bool push(const Time time, const InType &msg) override {
     return storage_.push(time, msg);
   }
 
-  virtual Time sucTime(const Time time,
-                       const PolicyAttribute attr) const override {
+  Time sucTime(const Time time, const PolicyAttribute attr) const override {
     auto iter = storage_.findSuc(time);
 
     if (attr_ < attr || iter == storage_.end()) {
@@ -63,14 +62,14 @@ struct Policy : public PolicyBase<Policy<_Derived>> {
     }
   }
 
-  virtual std::pair<OutType, StatusCode> peek(const Time time) const override {
-    auto out = doPeek(time);
-    if (out.second) {
-      return {out, kPeekSuccess};
-    } else if (!storage_.empty() && time < storage_.back().first) {
-      return {out, kPeekExpired};
+  std::pair<OutType, StatusCode> peek(const Time time) const override {
+    const auto &[msg, succeed] = doPeek(time);
+    if (succeed) {
+      return {{msg, true}, kPeekSuccess};
+    } else if (!storage_.empty() && time < storage_.backStamp()) {
+      return {{msg, false}, kPeekExpired};
     } else {
-      return {out, kPeekNotReady};
+      return {{msg, false}, kPeekNotReady};
     }
   }
 
@@ -81,8 +80,8 @@ struct Policy : public PolicyBase<Policy<_Derived>> {
   size_t queueSize() const { return storage_.size(); }
 
 protected:
-  PolicyAttribute attr_;
   Storage storage_;
+  PolicyAttribute attr_;
 };
 
 template <typename _Policy> struct PolicyArray;
@@ -101,12 +100,11 @@ struct PolicyArray : public PolicyBase<PolicyArray<_Policy>> {
 
   PolicyArray(const std::vector<Policy> &policies) : policies_(policies) {}
 
-  virtual bool push(const Time time, const InType &msg) override {
+  bool push(const Time time, const InType &msg) override {
     return policies_.at(msg.second).push(time, msg.first);
   }
 
-  virtual Time sucTime(const Time time,
-                       const PolicyAttribute attr) const override {
+  Time sucTime(const Time time, const PolicyAttribute attr) const override {
     Time suc = std::numeric_limits<Time>::max();
     for (const auto &policy : policies_) {
       suc = std::min(suc, policy.sucTime(time, attr));
@@ -114,30 +112,30 @@ struct PolicyArray : public PolicyBase<PolicyArray<_Policy>> {
     return suc;
   }
 
-  virtual std::pair<OutType, StatusCode> peek(const Time time) const override {
-    OutType out;
-    StatusCode status;
+  std::pair<OutType, StatusCode> peek(const Time time) const override {
+    OutType total_out;
+    StatusCode total_status;
     bool all_success = true;
     bool any_expire = false;
 
     for (const auto &policy : policies_) {
-      auto res = policy.peek(time);
-      out.emplace_back(res.first);
+      const auto &[out, status] = policy.peek(time);
+      total_out.emplace_back(out);
       if (policy.attr() != kOptional) {
-        all_success &= (kPeekSuccess == res.second);
-        any_expire |= (kPeekExpired == res.second);
+        all_success &= (kPeekSuccess == status);
+        any_expire |= (kPeekExpired == status);
       }
     }
 
     if (all_success) {
-      status = kPeekSuccess;
+      total_status = kPeekSuccess;
     } else if (any_expire) {
-      status = kPeekExpired;
+      total_status = kPeekExpired;
     } else {
-      status = kPeekNotReady;
+      total_status = kPeekNotReady;
     }
 
-    return {out, status};
+    return {total_out, total_status};
   }
 
   size_t queueSize(int id) const { return policies_.at(id).queueSize(); }

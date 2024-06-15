@@ -54,6 +54,12 @@ template <typename _Derived> struct StorageBase {
   // caller should make sure storage is not empty
   std::pair<Time, MsgType> back() const { return derived().backImpl(); }
 
+  // the front (smallest) stamp
+  Time frontStamp() const { return derived().frontStampImpl(); }
+
+  // the back (largest) stamp
+  Time backStamp() const { return derived().backStampImpl(); }
+
 protected:
   Derived &derived() { return static_cast<Derived &>(*this); }
   const Derived &derived() const { return static_cast<const Derived &>(*this); }
