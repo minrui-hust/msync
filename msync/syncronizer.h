@@ -106,11 +106,11 @@ protected:
             typename... _Msgs>
   StatusCode emitHelper(const int64_t time, const _Msgs &...msgs) {
     const auto &policy = std::get<_Idx - 1>(policies_);
-    auto res = policy.peek(time);
+    const auto &[msg, status] = policy.peek(time);
 
-    if (kPeekSuccess == res.second) {
-      return emitHelper<_Idx - 1, true>(time, res.first, msgs...);
-    } else if (kPeekExpired == res.second) {
+    if (kPeekSuccess == status) {
+      return emitHelper<_Idx - 1, true>(time, msg, msgs...);
+    } else if (kPeekExpired == status) {
       return kEmitExpired;
     } else {
       return kEmitNotReady;
@@ -126,6 +126,7 @@ protected:
     return kEmitSuccess;
   }
 
+protected:
   Time time_pivot_;
   PolicyAttribute interest_attr_;
   PolicyTuple policies_;
@@ -155,9 +156,7 @@ struct SyncronizerMinInterval
   // constructor
   SyncronizerMinInterval(const int64_t min_interval,
                          const _Polices &...policies)
-      : Base(kNormal, policies...) {
-    min_interval_ = min_interval;
-  }
+      : Base(kNormal, policies...), min_interval_(min_interval) {}
 
 protected:
   virtual void updatePivot(const Time time, const StatusCode code) override {
@@ -168,6 +167,7 @@ protected:
     }
   }
 
+protected:
   Time min_interval_;
 };
 
