@@ -11,6 +11,7 @@ the synchronized messages as parameters. There are two kinks of synchronizers, '
   An 'SynchronizerMasterSlave' treats messages differently, one message is specified as master, and others are slaves. Message synchronization only happens at the master message's stamp, when an master message arrives with stamp accompanied, synchronizer will try get slave messages from slave policies, if all slave messages are collected successfully, then callback will be called. On the other hand, if some slave message failed to peek, depends on the configuration, if this message is optional, then callback will be called as normal, with unavailable message flaged, otherwise, callback wont be called and master message will be cached, waiting for the available slave messages.
 
 # Policy
+policy is much like a interpolator, put message in and get message (at specified stamp) out
 
 # Storage
 
