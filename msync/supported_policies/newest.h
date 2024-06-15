@@ -32,14 +32,13 @@ struct NewestPolicy : public Policy<NewestPolicy<_MsgType, _Alloc, _Storage>> {
       : Base(history_win, attr) {}
 
   virtual std::pair<MsgType, bool> doPeek(const Time) const override {
-    std::pair<MsgType, bool> ret;
-    auto found = storage_.back();
-    if (found == storage_.end()) {
-      ret.second = false;
-    } else {
-      ret.first = found->second;
+    std::pair<MsgType, bool> ret{MsgType{}, false};
+
+    if (!storage_.empty()) {
+      ret.first = storage_.back().second;
       ret.second = true;
     }
+
     return ret;
   }
 };

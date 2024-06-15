@@ -67,7 +67,7 @@ struct Policy : public PolicyBase<Policy<_Derived>> {
     auto out = doPeek(time);
     if (out.second) {
       return {out, kPeekSuccess};
-    } else if (!storage_.empty() && time < storage_.back()->first) {
+    } else if (!storage_.empty() && time < storage_.back().first) {
       return {out, kPeekExpired};
     } else {
       return {out, kPeekNotReady};

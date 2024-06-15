@@ -30,52 +30,48 @@ struct MapStorage : public StorageBase<MapStorage<_Msg, _Alloc>> {
 
   MapStorage(const Time history_win) : Base(history_win) {}
 
-  bool push(const int64_t &time, const MsgType &msg) {
-    if (!storage_.empty() && time <= storage_.rbegin()->first) {
+  // interface implementations
+
+  bool pushImpl(const int64_t &time, const MsgType &msg) {
+    if (!stamp2msg_.empty() && time <= stamp2msg_.rbegin()->first) {
       return false;
     }
 
-    storage_.insert(std::make_pair(time, msg));
+    stamp2msg_.insert(std::make_pair(time, msg));
 
     // check if we should remove the old ones
-    if (storage_.begin()->first < time - history_win_) {
-      storage_.erase(storage_.begin());
+    if (stamp2msg_.begin()->first < time - history_win_) {
+      stamp2msg_.erase(stamp2msg_.begin());
     }
 
     return true;
   }
 
-  size_t size() const { return storage_.size(); }
+  size_t sizeImpl() const { return stamp2msg_.size(); }
 
-  bool empty() const { return storage_.empty(); }
+  bool emptyImpl() const { return stamp2msg_.empty(); }
 
-  ConstIter end() const { return storage_.end(); }
+  ConstIter beginImpl() const { return stamp2msg_.begin(); }
 
-  ConstIter find(const Time time) const { return storage_.find(time); }
+  ConstIter endImpl() const { return stamp2msg_.end(); }
 
-  // nearest item with stamp NO LARGE(<=) than time
-  ConstIter findPre(const Time time) const {
-    auto upper = storage_.upper_bound(time);
-    return upper != storage_.begin() ? std::prev(upper) : storage_.end();
+  ConstIter findImpl(const Time time) const { return stamp2msg_.find(time); }
+
+  ConstIter findPreImpl(const Time time) const {
+    auto upper = stamp2msg_.upper_bound(time);
+    return upper != stamp2msg_.begin() ? std::prev(upper) : stamp2msg_.end();
   }
 
-  // nearest item with stamp LARGE(>) than time
-  ConstIter findSuc(const Time time) const {
-    return storage_.upper_bound(time);
+  ConstIter findSucImpl(const Time time) const {
+    return stamp2msg_.upper_bound(time);
   }
 
-  // the oldest item
-  ConstIter front() const { return storage_.begin(); }
+  std::pair<Time, MsgType> frontImpl() const { return *stamp2msg_.begin(); }
 
-  // the newest item
-  ConstIter back() const {
-    if (empty())
-      return storage_.end();
-    return std::prev(storage_.end());
-  }
+  std::pair<Time, MsgType> backImpl() const { return *stamp2msg_.rbegin(); }
 
 protected:
-  TimeMsgMap<_Msg, _Alloc> storage_;
+  TimeMsgMap<_Msg, _Alloc> stamp2msg_;
 };
 
 } // namespace msync
