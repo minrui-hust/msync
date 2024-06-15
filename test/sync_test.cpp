@@ -17,8 +17,7 @@ using namespace msync;
 TEST(InterfaceTest, Syncronizer) {
   using Vector3f = Eigen::Vector3f;
   using Msg = Vector3f;
-  using Storage = MapStorage<Msg>;
-  using Policy = ExactTimePolicy<Msg, Storage>;
+  using Policy = ExactTimePolicy<Msg>;
 
   {
     using Sync = SyncronizerMinInterval<Policy, Policy>;
@@ -55,8 +54,8 @@ TEST(InterfaceTest, Syncronizer) {
   }
 
   {
-    using P0 = ExactTimePolicy<Msg, Storage>;
-    using P1 = PolicyArray<ExactTimePolicy<Msg, Storage>>;
+    using P0 = ExactTimePolicy<Msg>;
+    using P1 = PolicyArray<ExactTimePolicy<Msg>>;
     using Sync = SyncronizerMasterSlave<P0, P1>;
     Sync sync{P0(), {{P0(), P0()}}};
     sync.push<0>(0, Vector3f());
@@ -69,7 +68,7 @@ TEST(InterfaceTest, Syncronizer) {
 
 TEST(InterfaceTest, Policy) {
   {
-    using Policy = ExactTimePolicy<float, MapStorage<float>>;
+    using Policy = ExactTimePolicy<float>;
     using Sync = SyncronizerMinInterval<Policy, Policy>;
     Sync sync(10, Policy(10), Policy(10));
     sync.push<0>(0, float(0));
@@ -77,7 +76,7 @@ TEST(InterfaceTest, Policy) {
   }
 
   {
-    using Policy = LinearInterpolatePolicy<float, MapStorage<float>>;
+    using Policy = LinearInterpolatePolicy<float>;
     using Sync = SyncronizerMinInterval<Policy, Policy>;
     Sync sync(10, Policy(10, 10), Policy(10));
     sync.push<0>(0, float(0));
@@ -85,7 +84,7 @@ TEST(InterfaceTest, Policy) {
   }
 
   {
-    using Policy = NearestPolicy<float, MapStorage<float>>;
+    using Policy = NearestPolicy<float>;
     using Sync = SyncronizerMinInterval<Policy, Policy>;
     Sync sync(10, Policy(10, 10), Policy(10));
     sync.push<0>(0, float(0));
@@ -93,7 +92,7 @@ TEST(InterfaceTest, Policy) {
   }
 
   {
-    using Policy = NearestPolicy<float, MapStorage<float>>;
+    using Policy = NearestPolicy<float>;
     using Sync = SyncronizerMinInterval<Policy, Policy>;
     Sync sync(10, Policy(10, 10), Policy(10));
     sync.push<0>(0, float(0));
@@ -101,7 +100,7 @@ TEST(InterfaceTest, Policy) {
   }
 
   {
-    using Policy = NewestPolicy<float, MapStorage<float>>;
+    using Policy = NewestPolicy<float>;
     using Sync = SyncronizerMinInterval<Policy, Policy>;
     Sync sync(10, Policy(10), Policy(10));
     sync.push<0>(0, float(0));
@@ -114,8 +113,7 @@ TEST(InterfaceTest, Policy) {
 TEST(InterfaceTest, Storage) {
   {
     using Msg = float;
-    using Storage = MapStorage<Msg>;
-    using Policy = ExactTimePolicy<Msg, Storage>;
+    using Policy = ExactTimePolicy<Msg>;
     using Sync = SyncronizerMinInterval<Policy, Policy>;
     Sync sync(10, Policy(10), Policy(10));
     sync.push<0>(0, Msg());
@@ -123,9 +121,9 @@ TEST(InterfaceTest, Storage) {
 
   {
     using Msg = Eigen::Vector3d;
-    using Storage =
-        MapStorage<Msg, Eigen::aligned_allocator<std::pair<const Time, Msg>>>;
-    using Policy = ExactTimePolicy<Msg, Storage>;
+    using Policy =
+        ExactTimePolicy<Msg,
+                        Eigen::aligned_allocator<std::pair<const Time, Msg>>>;
     using Sync = SyncronizerMinInterval<Policy, Policy>;
     Sync sync(10, Policy(10), Policy(10));
     sync.push<0>(0, Msg());
@@ -137,9 +135,9 @@ TEST(InterfaceTest, Storage) {
 TEST(InterfaceTest, Message) {
   { // Vector
     using Msg = Eigen::Vector3d;
-    using Storage =
-        MapStorage<Msg, Eigen::aligned_allocator<std::pair<const Time, Msg>>>;
-    using Policy = ExactTimePolicy<Msg, Storage>;
+    using Policy =
+        ExactTimePolicy<Msg,
+                        Eigen::aligned_allocator<std::pair<const Time, Msg>>>;
     using Sync = SyncronizerMinInterval<Policy, Policy>;
     Sync sync(10, Policy(10), Policy(10));
     sync.push<0>(0, Msg());
@@ -147,9 +145,9 @@ TEST(InterfaceTest, Message) {
 
   { // Quat
     using Msg = Eigen::Quaternion<double>;
-    using Storage =
-        MapStorage<Msg, Eigen::aligned_allocator<std::pair<const Time, Msg>>>;
-    using Policy = ExactTimePolicy<Msg, Storage>;
+    using Policy =
+        ExactTimePolicy<Msg,
+                        Eigen::aligned_allocator<std::pair<const Time, Msg>>>;
     using Sync = SyncronizerMinInterval<Policy, Policy>;
     Sync sync(10, Policy(10), Policy(10));
     sync.push<0>(0, Msg());
@@ -157,9 +155,9 @@ TEST(InterfaceTest, Message) {
 
   { // SE3
     using Msg = Eigen::Matrix<double, 7, 1>;
-    using Storage =
-        MapStorage<Msg, Eigen::aligned_allocator<std::pair<const Time, Msg>>>;
-    using Policy = ExactTimePolicy<Msg, Storage>;
+    using Policy =
+        ExactTimePolicy<Msg,
+                        Eigen::aligned_allocator<std::pair<const Time, Msg>>>;
     using Sync = SyncronizerMinInterval<Policy, Policy>;
     Sync sync(10, Policy(10), Policy(10));
     sync.push<0>(0, Msg());
@@ -170,9 +168,9 @@ TEST(InterfaceTest, Message) {
 
 TEST(InterfaceTest, QeueuSize) {
   using Msg = int;
-  using Storage =
-      MapStorage<Msg, Eigen::aligned_allocator<std::pair<const Time, Msg>>>;
-  using Policy = ExactTimePolicy<Msg, Storage>;
+  using Policy =
+      ExactTimePolicy<Msg,
+                      Eigen::aligned_allocator<std::pair<const Time, Msg>>>;
   using Sync = SyncronizerMinInterval<Policy, Policy>;
 
   {
@@ -206,9 +204,9 @@ TEST(InterfaceTest, QeueuSize) {
 
 TEST(MinIntervalPatternTest, Sanity) {
   using Msg = int;
-  using Storage =
-      MapStorage<Msg, Eigen::aligned_allocator<std::pair<const Time, Msg>>>;
-  using Policy = ExactTimePolicy<Msg, Storage>;
+  using Policy =
+      ExactTimePolicy<Msg,
+                      Eigen::aligned_allocator<std::pair<const Time, Msg>>>;
   using Sync = SyncronizerMinInterval<Policy, Policy>;
 
   {
@@ -253,9 +251,8 @@ TEST(MinIntervalPatternTest, Sanity) {
 
 TEST(MinIntervalPatternTest, Interpolate) {
   using Msg = float;
-  using Storage =
-      MapStorage<Msg, Eigen::aligned_allocator<std::pair<const Time, Msg>>>;
-  using Policy = LinearInterpolatePolicy<Msg, Storage>;
+  using Policy = LinearInterpolatePolicy<
+      Msg, Eigen::aligned_allocator<std::pair<const Time, Msg>>>;
   using Sync = SyncronizerMinInterval<Policy, Policy>;
 
   {

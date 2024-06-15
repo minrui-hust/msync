@@ -3,22 +3,28 @@
 #include "../policy.h"
 #include "../traits.h"
 
+#include "../supported_storages/map_storage.h"
+
 namespace msync {
 
-// Exact time policy
-template <typename _MsgType, typename _Storage> struct ExactTimePolicy;
+// Exact time policy, default to use MapStorage
+template <typename _MsgType,
+          typename _Alloc = std::allocator<std::pair<const Time, _MsgType>>,
+          typename _Storage = MapStorage<_MsgType, _Alloc>>
+struct ExactTimePolicy;
 
-template <typename _MsgType, typename _Storage>
-struct PolicyTraits<ExactTimePolicy<_MsgType, _Storage>> {
+template <typename _MsgType, typename _Alloc, typename _Storage>
+struct PolicyTraits<ExactTimePolicy<_MsgType, _Alloc, _Storage>> {
   using MsgType = _MsgType;
   using InType = MsgType;
   using OutType = std::pair<MsgType, bool>;
   using Storage = _Storage;
 };
 
-template <typename _MsgType, typename _Storage>
-struct ExactTimePolicy : public Policy<ExactTimePolicy<_MsgType, _Storage>> {
-  using Base = Policy<ExactTimePolicy<_MsgType, _Storage>>;
+template <typename _MsgType, typename _Alloc, typename _Storage>
+struct ExactTimePolicy
+    : public Policy<ExactTimePolicy<_MsgType, _Alloc, _Storage>> {
+  using Base = Policy<ExactTimePolicy<_MsgType, _Alloc, _Storage>>;
   using MsgType = _MsgType;
 
   using Base::storage_;

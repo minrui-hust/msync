@@ -1,24 +1,33 @@
 #pragma once
 
+#include <cstdlib>
+#include <limits>
+
 #include "../policy.h"
 #include "../traits.h"
 
+#include "../supported_storages/map_storage.h"
+
 namespace msync {
 
-// Nearest policy
-template <typename _MsgType, typename _Storage> struct NearestPolicy;
+// Nearest policy, default to use MapStorage
+template <typename _MsgType,
+          typename _Alloc = std::allocator<std::pair<const Time, _MsgType>>,
+          typename _Storage = MapStorage<_MsgType, _Alloc>>
+struct NearestPolicy;
 
-template <typename _MsgType, typename _Storage>
-struct PolicyTraits<NearestPolicy<_MsgType, _Storage>> {
+template <typename _MsgType, typename _Alloc, typename _Storage>
+struct PolicyTraits<NearestPolicy<_MsgType, _Alloc, _Storage>> {
   using MsgType = _MsgType;
   using InType = MsgType;
   using OutType = std::pair<MsgType, bool>;
   using Storage = _Storage;
 };
 
-template <typename _MsgType, typename _Storage>
-struct NearestPolicy : public Policy<NearestPolicy<_MsgType, _Storage>> {
-  using Base = Policy<NearestPolicy<_MsgType, _Storage>>;
+template <typename _MsgType, typename _Alloc, typename _Storage>
+struct NearestPolicy
+    : public Policy<NearestPolicy<_MsgType, _Alloc, _Storage>> {
+  using Base = Policy<NearestPolicy<_MsgType, _Alloc, _Storage>>;
   using MsgType = _MsgType;
 
   using Base::storage_;
